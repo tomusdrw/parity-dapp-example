@@ -8,12 +8,36 @@
   </head>
   <body>
     <h1>Hello World!</h1>
-    <pre></pre>
+
+    <h3>Your accounts:</h3>
+    <pre class="accounts"></pre>
+
+    <h3>Block Stats:</h3>
+    <p>
+      Current block: <span class="block"></span>
+    </p>
+    <p>
+      Transactions: <span class="txs"></span>
+    </p>
+
+
     <script>
+      const $ = document.querySelector.bind(document);
+
       parity.api.eth.accounts()
         .then(accounts => {
-          document.querySelector('pre').innerHTML = JSON.stringify(accounts, null, 2);
-        });
+          $('.accounts').innerHTML = JSON.stringify(accounts, null, 2);
+        })
+        .catch(alert);
+
+      setInterval(() => {
+        parity.api.eth.getBlockByNumber('latest')
+          .then(block => {
+            $('.block').innerHTML =  block.number;
+            $('.txs').innerHTML = JSON.stringify(block.transactions);
+          })
+          .catch(alert);
+      }, 1000);
     </script>
   </body>
 </html>
