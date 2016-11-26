@@ -20,24 +20,68 @@
       Transactions: <span class="txs"></span>
     </p>
 
+    <h3>Send test transaction:</h3>
+    <p>
+      Balance: <span class="balance"></span> ETH
+    </p>
+    <p>
+      <button class="btn">Send test transaction</button>
+      <br>
+      <span class="msg"></span>
+    </p>
+
+
 
     <script>
       const $ = document.querySelector.bind(document);
 
-      parity.api.eth.accounts()
+      // Display accounts
+      const accounts = parity.api.eth.accounts()
         .then(accounts => {
           $('.accounts').innerHTML = JSON.stringify(accounts, null, 2);
-        })
-        .catch(alert);
+          return accounts;
+        });
 
+      const firstAccount = accounts.then(accounts => accounts[0]);
+
+      // Display block details
       setInterval(() => {
-        parity.api.eth.getBlockByNumber('latest')
+        parity.api.eth.getBlockByNumber('latest', true)
           .then(block => {
             $('.block').innerHTML =  block.number;
             $('.txs').innerHTML = JSON.stringify(block.transactions);
           })
-          .catch(alert);
+          .catch(console.error.bind(console));
       }, 1000);
+
+      // Send transaction
+      // Display balance of first account
+      setInterval(() => {
+        accounts
+          .then(accounts => parity.api.eth.getBalance(accounts[0]))
+          .then(balance => {
+            $('.balance').innerHTML = parity.api.util.fromWei(balance).toFormat(3);
+          });
+      }, 1000);
+
+      // Send transaction on click
+      $('.btn').addEventListener('click', () => {
+        $('.btn').disabled = true;
+
+        firstAccount.then(account => {
+          parity.api.eth.sendTransaction({
+            from: account,
+            to: account,
+            value: parity.api.util.toWei(0.1, 'ether')
+          }).then(hash => {
+            $('.msg').innerHTML = `Transaction sent: ${hash}`;
+            $('.btn').disabled = false;
+          }).catch(() => {
+            $('.msg').innerHTML = 'Transaction rejected.';
+            $('.btn').disabled = false;
+          });
+        });
+      });
     </script>
   </body>
 </html>
