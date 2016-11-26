@@ -1,0 +1,8 @@
+{
+  "id": "my-dapp",
+  "name": "My Dapp",
+  "description": "My awesome new dapp",
+  "version": "0.0.1",
+  "author": "todr <tomasz@ethcore.io>",
+  "iconUrl": "icon.png"
+}
