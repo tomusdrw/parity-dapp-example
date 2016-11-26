@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width">
+    <title>My First Dapp</title>
+    <script src="/parity-utils/parity.js"></script>
+  </head>
+  <body>
+    <h1>Hello World!</h1>
+    <pre></pre>
+    <script>
+      parity.api.eth.accounts()
+        .then(accounts => {
+          document.querySelector('pre').innerHTML = JSON.stringify(accounts, null, 2);
+        });
+    </script>
+  </body>
+</html>
